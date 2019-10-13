@@ -27,6 +27,8 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
+    <button @click="updateStories">update stories</button>
+    <p>{{ topstories }}</p>
   </div>
 </template>
 
@@ -38,6 +40,17 @@ export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  computed: {
+    topstories() {
+      return this.$store.getters.topstories
+    }
+  },
+  methods: {
+    updateStories() {
+      console.log(this)
+      this.$store.dispatch('updateTopstoriesAction')
+    }
   }
 }
 </script>
