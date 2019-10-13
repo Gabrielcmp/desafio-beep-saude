@@ -29,6 +29,10 @@
     </ul>
     <button @click="updateStories">update stories</button>
     <p>{{ topstories }}</p>
+    <button @click="updateStoriesObjects">update stories Objects</button>
+    <li v-for="story in topstoriesObjects">
+      {{ story }}
+    </li>
   </div>
 </template>
 
@@ -44,13 +48,19 @@ export default {
   computed: {
     topstories() {
       return this.$store.getters.topstories
+    },
+    topstoriesObjects() {
+      return this.$store.getters.topstoriesObjects
     }
   },
   methods: {
     updateStories() {
-      console.log(this)
       this.$store.dispatch('updateTopstoriesAction')
-    }
+    },
+    updateStoriesObjects() {
+      this.$store.dispatch('updateTopstoriesObjetctsAction')
+    },
+
   }
 }
 </script>
