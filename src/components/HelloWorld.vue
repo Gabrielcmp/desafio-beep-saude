@@ -27,10 +27,10 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
-    <button @click="updateStories">update stories</button>
-    <p>{{ topstories }}</p>
+    <button @click="updateStoriesIDs">update stories</button>
+    <p>{{ topstoriesIDs }}</p>
     <button @click="updateStoriesObjects">update stories Objects</button>
-    <li v-for="story in topstoriesObjects">
+    <li v-for="story in top15Stories">
       {{ story }}
     </li>
   </div>
@@ -46,19 +46,19 @@ export default {
     msg: String
   },
   computed: {
-    topstories() {
-      return this.$store.getters.topstories
+    topstoriesIDs() {
+      return this.$store.getters.getTopstoriesIDs
     },
-    topstoriesObjects() {
-      return this.$store.getters.topstoriesObjects
+    top15Stories() {
+      return this.$store.getters.top15Stories
     }
   },
   methods: {
-    updateStories() {
-      this.$store.dispatch('updateTopstoriesAction')
+    updateStoriesIDs() {
+      this.$store.dispatch('updateTopstoriesIDsAction')
     },
-    updateStoriesObjects() {
-      this.$store.dispatch('updateTopstoriesObjetctsAction')
+    updateTop15Stories() {
+      this.$store.dispatch('updateTop15StoriesAction')
     },
 
   }

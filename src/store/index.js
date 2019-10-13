@@ -10,29 +10,29 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    topstories: [],
-    topstoriesObjects: []
+    topstoriesIDs: [],
+    top15Stories: [],
   },
   mutations: {
-    updateTopstories(state, stories) {
+    SET_TOPSTORIES_IDS(state, stories) {
       state.topstories = stories
     },
-    updateTopstoriesObjetcs(state, storyObjects) {
+    SET_TOP15_STORIES(state, storyObjects) {
       state.topstoriesObjects = storyObjects
     }
   },
   getters: {
-    topstories: state => state.topstories,
-    topstoriesObjects: state => state.topstoriesObjects
+    getTopstoriesIDs: state => state.topstoriesIDs,
+    getTop15Stories: state => state.top15Stories
   },
   actions: {
-    updateTopstoriesAction({ commit }) {
+    updateTopstoriesIDsAction({ commit }) {
       fetch(`${baseHNUrl}/topstories.json`).then(r => r.json()).then(stories => {
-          commit('updateTopstories', stories.sort().reverse());
+          commit('SET_TOPSTORIES_IDS', stories.sort().reverse());
       })
     },
-    updateTopstoriesObjetctsAction({ commit, state }) {
-      let top15 = state.topstories.slice(0,15)
+    updateTop15StoriesAction({ commit, getters }) {
+      let top15 = getters.getTopstoriesIDs.slice(0,15)
       Promise.all(top15.map(storyId => {
         return new Promise(resolve => {
           fetch(`${baseHNUrl}/item/${storyId}.json`).then(r => r.json()).then(story => {
@@ -40,7 +40,7 @@ export const store = new Vuex.Store({
           })
         })
       })).then(storyObjects => {
-        commit('updateTopstoriesObjetcs', storyObjects)
+        commit('SET_TOP15_STORIES', storyObjects)
       })
     }
   }
