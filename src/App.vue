@@ -2,19 +2,19 @@
   <div id="app">
     <AppHeader/>
     <SearchStories/>
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <TopStories/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TopStories from './components/TopStories.vue'
 import AppHeader from './components/layout/AppHeader.vue'
 import SearchStories from './components/SearchStories.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld,
+    TopStories,
     AppHeader,
     SearchStories
   },
@@ -24,7 +24,7 @@ export default {
 <style>
 body {
   margin: 0;
-  background-color: rgb(230 230 230);
+  background-color: rgb(245 245 245);
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

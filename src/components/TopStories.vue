@@ -1,6 +1,9 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
+  <div class="wrapper top-stories">
+    <h1>Top 15 Hacker News</h1>
+    <li v-for="story in top15Stories">
+      <StoryCard :story="story"/>
+    </li>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -43,13 +46,15 @@
 </template>
 
 <script>
-import AppHeader from './layout/AppHeader'
-
+import StoryCard from './StoryCard.vue'
 
 export default {
-  name: 'HelloWorld',
+  name: 'TopStories',
   props: {
     msg: String
+  },
+  components: {
+    StoryCard
   },
   computed: {
     topstoriesIDs() {
@@ -78,6 +83,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+h1 {
+  color: rgb(255, 132, 0);
+}
 h3 {
   margin: 40px 0 0;
 }
@@ -91,5 +99,9 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.top-stories {
+  text-align: left;
 }
 </style>
