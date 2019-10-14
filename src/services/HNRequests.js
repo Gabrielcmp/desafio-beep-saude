@@ -13,3 +13,7 @@ export const getItems = itemIDs => {
     })
   }))
 }
+
+export const newstories = () => {
+  return fetch(`${baseHNUrl}/newstories.json`).then(r => r.json())
+}
