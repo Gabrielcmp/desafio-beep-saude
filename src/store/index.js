@@ -1,10 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { isEmpty } from "lodash"
+import { topstories, getItems } from "../services/HNRequests"
 // import Firebase from 'firebase';
 
 // const ref = new Firebase("https://hacker-news.firebaseio.com/v0/");
-const baseHNUrl = "https://hacker-news.firebaseio.com/v0"
 
 Vue.use(Vuex);
 
@@ -33,32 +33,20 @@ export const store = new Vuex.Store({
   },
   actions: {
     updateTopstoriesIDsAction({ commit }) {
-      fetch(`${baseHNUrl}/topstories.json`).then(r => r.json()).then(stories => {
+      topstories().then(stories => {
           commit('SET_TOPSTORIES_IDS', stories.sort().reverse());
       })
     },
     updateTop15StoriesAction({ commit, getters }) {
       let top15 = getters.getTopstoriesIDs.slice(0,15)
-      Promise.all(top15.map(storyId => {
-        return new Promise(resolve => {
-          fetch(`${baseHNUrl}/item/${storyId}.json`).then(r => r.json()).then(story => {
-            resolve(story);
-          })
-        })
-      })).then(storyObjects => {
-        commit('SET_TOP15_STORIES', storyObjects)
+      getItems(top15).then(top15Stories => {
+        commit('SET_TOP15_STORIES', top15Stories)
       })
     },
     updateFirstStoryComments({ commit, getters }) {
       let commentIDs = getters.getTop15Stories[0].kids;
       if (!isEmpty(commentIDs)) {
-        Promise.all(commentIDs.map(commentId => {
-          return new Promise(resolve => {
-            fetch(`${baseHNUrl}/item/${commentId}.json`).then(r => r.json()).then(comment => {
-              resolve(comment);
-            })
-          })
-        })).then(comments => {
+        getItems(commentIDs).then(comments => {
           commit(
             'SET_STORY_COMMENTS',
             comments.filter(comment => {
@@ -67,6 +55,6 @@ export const store = new Vuex.Store({
           )
         })
       }
-  }
+    }
   }
 });
