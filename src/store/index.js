@@ -12,24 +12,25 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     topstoriesIDs: [],
-    top15Stories: [],
-    topStoryComments: []
+    newstoriesIDs: [],
+    stories: [],
   },
   mutations: {
     SET_TOPSTORIES_IDS(state, stories) {
       state.topstoriesIDs = stories
     },
-    SET_TOP15_STORIES(state, storyObjects) {
-      state.top15Stories = storyObjects
+    SET_STORY_COMMENTS(state, { story, comments }) {
+      story.comments = comments
     },
-    SET_STORY_COMMENTS(state, comments) {
-      state.topStoryComments = comments
+    ADD_STORIES(state, stories) {
+      state.stories.push(...stories)
     }
   },
   getters: {
     getTopstoriesIDs: state => state.topstoriesIDs,
-    getTop15Stories: state => state.top15Stories,
-    getTopStoryComments: state => state.topStoryComments
+    getTop15Stories: state => state.stories.slice(0,15),
+    getTopStoryComments: state => state.topStoryComments,
+    getStories: state => state.stories
   },
   actions: {
     updateTopstoriesIDsAction({ commit }) {
@@ -40,13 +41,17 @@ export const store = new Vuex.Store({
     updateTop15StoriesAction({ commit, getters }) {
       let top15 = getters.getTopstoriesIDs.slice(0,15)
       getItems(top15).then(top15Stories => {
-        commit('SET_TOP15_STORIES', top15Stories)
+        commit('ADD_STORIES', top15Stories)
       })
     },
-    updateFirstStoryComments({ commit, getters }) {
-      let commentIDs = getters.getTop15Stories[0].kids;
-      if (!isEmpty(commentIDs)) {
+    updateStoryComments({ commit, getters }, storyID) {
+      let story = getters.getStories.find(story => story.id === storyID)
+      if (story.descendants === 0) {
+        commit('SET_STORY_COMMENTS', { story, comments: [] })
+      }else {
+        let commentIDs = story.kids;
         getItems(commentIDs).then(comments => {
+          //Might remove filter from here and add it only in the vue file, to be able to also show irrelevant comments.
           commit(
             'SET_STORY_COMMENTS',
             comments.filter(comment => {
