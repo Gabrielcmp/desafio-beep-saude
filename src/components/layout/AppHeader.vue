@@ -11,7 +11,7 @@
 
 <style scoped>
   .hn-bg-orange {
-    background-color: rgb(255, 132, 0);
+    background-color: rgb(255, 102, 0);
   }
   .home-buttons {
     padding: 15px 0;
@@ -30,5 +30,6 @@
   .title {
     font-size: 30px;
     font-weight: bolder;
+    color: black;
   }
 </style>

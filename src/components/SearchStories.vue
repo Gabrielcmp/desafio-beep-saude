@@ -24,21 +24,22 @@ export default {
   .search-input {
     width: 100%;
     height: 2em;
-    border-radius: 3px;
+    border-radius: 2px;
     border-style: solid;
-    border-color: rgb(230, 230, 230);
+    border-width: thin;
+    border-color: rgb(204, 204, 204);
     font-weight: bold;
-    padding: 0 0 0 10px;
   }
   ::placeholder {
-    color: rgb(180, 180, 180);
+    padding-left: 10px;
+    color: rgb(155, 155, 155);
     font-weight: bold;
   }
   .orange-search {
     float: right;
-    margin-top: -23px;
+    margin: -23px 10px 0 0;
     z-index: 100;
     position: relative;
-    color: rgb(255, 132, 0);
+    color: rgb(255, 102, 0);
   }
 </style>
