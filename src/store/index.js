@@ -20,16 +20,18 @@ export const store = new Vuex.Store({
       state.topstoriesIDs = stories
     },
     SET_STORY_COMMENTS(state, { story, comments }) {
-      story.comments = comments
+      Vue.set(story, 'comments', comments)
     },
     ADD_STORIES(state, stories) {
       state.stories.push(...stories)
+    },
+    TOGGLE_SHOW_COMMENTS(state, story) {
+      Vue.set(story, 'showingComments', !story.showingComments)
     }
   },
   getters: {
     getTopstoriesIDs: state => state.topstoriesIDs,
     getTop15Stories: state => state.stories.slice(0,15),
-    getTopStoryComments: state => state.topStoryComments,
     getStories: state => state.stories
   },
   actions: {
@@ -51,15 +53,20 @@ export const store = new Vuex.Store({
       }else {
         let commentIDs = story.kids;
         getItems(commentIDs).then(comments => {
-          //Might remove filter from here and add it only in the vue file, to be able to also show irrelevant comments.
+          //Might remove filter from here and do it only in the vue file, to be able to also show irrelevant comments.
           commit(
-            'SET_STORY_COMMENTS',
-            comments.filter(comment => {
+            'SET_STORY_COMMENTS', {
+              story,
+              comments: comments.filter(comment => {
               return comment.text && comment.text.length > 20
             })
+          }
           )
         })
       }
+    },
+    toggleStoryShowingComments({ commit }, story) {
+      commit('TOGGLE_SHOW_COMMENTS', story)
     }
   }
 });
