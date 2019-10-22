@@ -12,16 +12,20 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     topstoriesIDs: [],
-    newstoriesIDs: [],
+    newstories: {
+      ids: [],
+      isUpdating: false,
+      updated: false,
+      searchField: ''
+    },
     stories: [],
-    isSearching: false,
   },
   mutations: {
     SET_TOPSTORIES_IDS(state, stories) {
       state.topstoriesIDs = stories
     },
     SET_NEWSTORIES_IDS(state, stories) {
-      state.newstoriesIDs = stories
+      Vue.set(state.newstories, 'ids', stories);
     },
     SET_STORY_COMMENTS(state, { story, comments }) {
       Vue.set(story, 'comments', comments)
@@ -32,17 +36,20 @@ export const store = new Vuex.Store({
     TOGGLE_SHOW_COMMENTS(state, story) {
       Vue.set(story, 'showingComments', !story.showingComments)
     },
-    TOGGLE_IS_SEARCHING(state) {
-      state.isSearching = !state.isSearching
+    TOGGLE_NEWSTORIES_IS_UPDATING(state) {
+      Vue.set(state.newstories, 'isUpdating', !state.newstories.isUpdating)
+    },
+    SET_NEWSTORIES_UPDATED(state) {
+      Vue.set(state.newstories, 'updated', true)
     }
   },
   getters: {
     getTopstoriesIDs: state => state.topstoriesIDs,
     getTop15Stories: state => {
       let ids = state.topstoriesIDs.slice(0, 15);
-      return(state.stories.filter(story => ids.includes(story.id)))
+      return(state.stories.filter(story => story && ids.includes(story.id)))
     },
-    getNewstoriesIDs: state => state.newstoriesIDs,
+    getNewstories: state => state.newstories,
     getStories: state => state.stories,
   },
   actions: {
@@ -67,18 +74,19 @@ export const store = new Vuex.Store({
       })
     },
     updateNewStoriesAction({ commit, getters }) {
-      // if (!getters.stories.isSearching) {
-        commit('TOGGLE_IS_SEARCHING');
+      if (!getters.getNewstories.updated && !getters.getNewstories.isUpdating) {
+        commit('TOGGLE_NEWSTORIES_IS_UPDATING');
         let top15 = getters.getTopstoriesIDs.slice(0,15)
-        let newstoriesToGet = getters.getNewstoriesIDs.filter(id => {
+        let storiesToGet = getters.getNewstories.ids.filter(id => {
           return !top15.includes(id)
         })
-        return new Promise(resolve => getItems(newstoriesToGet).then(stories => {
+        return new Promise(resolve => getItems(storiesToGet).then(stories => {
           commit('ADD_STORIES', stories);
-          commit('TOGGLE_IS_SEARCHING');
-          resolve()
+          commit('SET_NEWSTORIES_UPDATED');
+          commit('TOGGLE_NEWSTORIES_IS_UPDATING');
+          resolve();
         }))
-      // }
+      }
     },
     updateStoryComments({ commit, getters }, storyID) {
       let story = getters.getStories.find(story => story.id === storyID)
