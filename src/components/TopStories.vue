@@ -1,21 +1,10 @@
 <template>
   <div class="wrapper top-stories">
     <h1>Top 15 Hacker News</h1>
-    <li v-for="story in top15Stories">
+    <li v-for="story in top15Stories" :key="story.id">
       <StoryCard :story="story"/>
     </li>
-    <button @click="updateStoriesIDs">update stories</button>
-    <p>{{ topstoriesIDs }}</p>
-    <button @click="updateTop15Stories">update stories Objects</button>
-    <li v-for="story in top15Stories">
-      {{ story }}
-    </li>
     <br>
-    <button @click="updateFirstStoryComments">update comments</button>
-    <li v-for="comment in topStoryComments">
-      {{ comment }}
-    </li>
-
   </div>
 </template>
 
@@ -36,21 +25,10 @@ export default {
     },
     top15Stories() {
       return this.$store.getters.getTop15Stories
-    },
-    topStoryComments() {
-      return this.$store.getters.getTopStoryComments
     }
   },
-  methods: {
-    updateStoriesIDs() {
-      this.$store.dispatch('updateTopstoriesIDsAction')
-    },
-    updateTop15Stories() {
-      this.$store.dispatch('updateTop15StoriesAction')
-    },
-    updateFirstStoryComments() {
-      this.$store.dispatch('updateFirstStoryComments')
-    }
+  created: function() {
+
   }
 }
 </script>

@@ -1,20 +1,19 @@
 <template lang="html">
-<div class="story-card">
-<a :href="story.url"><h2>{{story.title}}</h2></a>
-<p>by {{story.by}} {{new Date(story.time*1000).toLocaleString()}}</p>
-<p><b>{{story.descendants}} comments</b></p>
-<p v-if="story.descendants > 0"
-   v-on:click="handleComments(story)"
-   class="display-comments">
-   - {{story.showingComments ? "Hide" : "Show"}} most relevant comments
- </p>
- <div v-if="story.showingComments && story.comments"
-      v-for="comment in story.comments"
-      class="comments"
-  >
-   <CommentCard :comment="comment"/>
+  <div class="story-card">
+    <a :href="story.url"><h2>{{story.title}}</h2></a>
+    <p>by {{story.by}} {{new Date(story.time*1000).toLocaleString()}}</p>
+  <div v-if="story.type === 'story'">  
+    <p><b>{{story.descendants}} comments</b></p>
+    <p v-if="story.descendants > 0"
+       v-on:click="handleComments(story)"
+       class="display-comments">
+       - {{story.showingComments ? "Hide" : "Show"}} most relevant comments
+    </p>
  </div>
-</div>
+   <div v-if="story.showingComments && story.comments" class="comments">
+     <CommentCard v-for="comment in story.comments" :comment="comment"/>
+   </div>
+  </div>
 </template>
 
 <script>
@@ -63,7 +62,7 @@ export default {
     background-color: white;
     max-width: 100%;
   }
-  .comments:first-of-type {
+  .comments {
     border-top: solid 1px;
     margin: 0 -25px;
     padding: 0 25px;;

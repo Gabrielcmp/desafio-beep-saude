@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { isEmpty } from "lodash"
-import { topstories, getItems } from "../services/HNRequests"
+import { topstories, getItems, newstories } from "../services/HNRequests"
 // import Firebase from 'firebase';
 
 // const ref = new Firebase("https://hacker-news.firebaseio.com/v0/");
@@ -14,10 +14,14 @@ export const store = new Vuex.Store({
     topstoriesIDs: [],
     newstoriesIDs: [],
     stories: [],
+    isSearching: false,
   },
   mutations: {
     SET_TOPSTORIES_IDS(state, stories) {
       state.topstoriesIDs = stories
+    },
+    SET_NEWSTORIES_IDS(state, stories) {
+      state.newstoriesIDs = stories
     },
     SET_STORY_COMMENTS(state, { story, comments }) {
       Vue.set(story, 'comments', comments)
@@ -27,24 +31,54 @@ export const store = new Vuex.Store({
     },
     TOGGLE_SHOW_COMMENTS(state, story) {
       Vue.set(story, 'showingComments', !story.showingComments)
+    },
+    TOGGLE_IS_SEARCHING(state) {
+      state.isSearching = !state.isSearching
     }
   },
   getters: {
     getTopstoriesIDs: state => state.topstoriesIDs,
-    getTop15Stories: state => state.stories.slice(0,15),
-    getStories: state => state.stories
+    getTop15Stories: state => {
+      let ids = state.topstoriesIDs.slice(0, 15);
+      return(state.stories.filter(story => ids.includes(story.id)))
+    },
+    getNewstoriesIDs: state => state.newstoriesIDs,
+    getStories: state => state.stories,
   },
   actions: {
     updateTopstoriesIDsAction({ commit }) {
-      topstories().then(stories => {
+      return new Promise(resolve => topstories().then(stories => {
           commit('SET_TOPSTORIES_IDS', stories.sort().reverse());
-      })
+          resolve()
+      }))
     },
+    updateNewstoriesIDsAction({ commit }) {
+      return new Promise(resolve => newstories().then(stories => {
+          commit('SET_NEWSTORIES_IDS', stories);
+          resolve()
+      }))
+    },
+    // Might wrap both actions and getters for top15 stories and search results,
+    // filtering them by stateID, but for simplicity they'll stay separate now.
     updateTop15StoriesAction({ commit, getters }) {
       let top15 = getters.getTopstoriesIDs.slice(0,15)
       getItems(top15).then(top15Stories => {
         commit('ADD_STORIES', top15Stories)
       })
+    },
+    updateNewStoriesAction({ commit, getters }) {
+      // if (!getters.stories.isSearching) {
+        commit('TOGGLE_IS_SEARCHING');
+        let top15 = getters.getTopstoriesIDs.slice(0,15)
+        let newstoriesToGet = getters.getNewstoriesIDs.filter(id => {
+          return !top15.includes(id)
+        })
+        return new Promise(resolve => getItems(newstoriesToGet).then(stories => {
+          commit('ADD_STORIES', stories);
+          commit('TOGGLE_IS_SEARCHING');
+          resolve()
+        }))
+      // }
     },
     updateStoryComments({ commit, getters }, storyID) {
       let story = getters.getStories.find(story => story.id === storyID)

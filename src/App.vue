@@ -18,6 +18,12 @@ export default {
     AppHeader,
     SearchStories
   },
+  created: function() {
+    this.$store.dispatch('updateTopstoriesIDsAction').then(() => {
+      this.$store.dispatch('updateTop15StoriesAction')
+      this.$store.dispatch('updateNewStoriesAction')
+    })
+  }
 }
 </script>
 
