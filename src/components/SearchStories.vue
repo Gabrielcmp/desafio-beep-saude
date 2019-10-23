@@ -22,8 +22,8 @@
     <div v-if="lastSearch">
       <div class="wrapper stories">
         <h2>Search Results for: <i>{{lastSearch}}</i></h2>
-        <p> {{searchResult.length}} results</p>
-        <li v-for="story in searchResult" :key="'s_' + story.id">
+        <p> {{searchResult.length}} results. {{searchResult.length > 10 ? '(Showing the first 10)' : ''}}</p>
+        <li v-for="story in searchResultLimited" :key="'s_' + story.id">
           <StoryCard :story="story"/>
         </li>
       </div>
@@ -52,6 +52,9 @@ export default {
     },
     searchResult() {
       return this.$store.getters.getFilteredStories
+    },
+    searchResultLimited() {
+      return this.$store.getters.getFilteredStories.slice(0,10);
     }
   },
   methods: {
