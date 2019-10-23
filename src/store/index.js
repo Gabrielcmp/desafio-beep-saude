@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { isEmpty } from "lodash"
+import { isEmpty, chunk } from "lodash"
 import { topstories, getItems, newstories } from "../services/HNRequests"
 // import Firebase from 'firebase';
 
@@ -16,7 +16,8 @@ export const store = new Vuex.Store({
       ids: [],
       isUpdating: false,
       updated: false,
-      searchField: ''
+      isSearching: false,
+      filteredIDs: []
     },
     stories: [],
   },
@@ -41,6 +42,12 @@ export const store = new Vuex.Store({
     },
     SET_NEWSTORIES_UPDATED(state) {
       Vue.set(state.newstories, 'updated', true)
+    },
+    TOGGLE_NEWSTORIES_IS_SEARCHING(state) {
+      Vue.set(state.newstories, 'isSearching', !state.newstories.isSearching)
+    },
+    SET_NEWTORIES_FILTERED_IDS(state, ids) {
+      Vue.set(state.newstories, 'filteredIDs', ids)
     }
   },
   getters: {
@@ -51,6 +58,10 @@ export const store = new Vuex.Store({
     },
     getNewstories: state => state.newstories,
     getStories: state => state.stories,
+    getIsSearchDisabled: state => state.newstories.isUpdating,
+    getFilteredStories: state => state.stories.filter(story => {
+      return story && state.newstories.filteredIDs.includes(story.id)
+    })
   },
   actions: {
     updateTopstoriesIDsAction({ commit }) {
@@ -76,10 +87,14 @@ export const store = new Vuex.Store({
     updateNewStoriesAction({ commit, getters }) {
       if (!getters.getNewstories.updated && !getters.getNewstories.isUpdating) {
         commit('TOGGLE_NEWSTORIES_IS_UPDATING');
+        // Do not get the newstories that are/will be set by the top15 stories
         let top15 = getters.getTopstoriesIDs.slice(0,15)
         let storiesToGet = getters.getNewstories.ids.filter(id => {
           return !top15.includes(id)
         })
+        // let batchSize = 25
+        // let test = chunk(storiesToGet, batchSize)
+        // console.log(test)
         return new Promise(resolve => getItems(storiesToGet).then(stories => {
           commit('ADD_STORIES', stories);
           commit('SET_NEWSTORIES_UPDATED');
@@ -109,6 +124,15 @@ export const store = new Vuex.Store({
     },
     toggleStoryShowingComments({ commit }, story) {
       commit('TOGGLE_SHOW_COMMENTS', story)
+    },
+    updateNewstoriesFilteredIds({ commit, getters }, query) {
+      commit('TOGGLE_NEWSTORIES_IS_SEARCHING')
+      //Could return a copy of the stories directly, but wanted to avoid doing so,
+      //to keep consistency. This will have a bad side effect on the show comments though
+      let ids = getters.getStories.filter(story => {
+        return story && story.title.toUpperCase().includes(query.toUpperCase())
+      }).map(story => story.id)
+      commit('SET_NEWTORIES_FILTERED_IDS', ids)
     }
   }
 });

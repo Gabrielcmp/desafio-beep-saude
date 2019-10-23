@@ -44,4 +44,7 @@ body {
   max-width: 1024px;
   padding: 0 40px;
 }
+.stories {
+  text-align: left;
+}
 </style>

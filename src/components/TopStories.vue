@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper top-stories">
+  <div class="wrapper stories">
     <h1>Top 15 Hacker News</h1>
-    <li v-for="story in top15Stories" :key="story.id">
+    <li v-for="story in top15Stories" :key="'t_' + story.id">
       <StoryCard :story="story"/>
     </li>
     <br>
@@ -51,9 +51,5 @@ li {
 }
 a {
   color: #42b983;
-}
-
-.top-stories {
-  text-align: left;
 }
 </style>
