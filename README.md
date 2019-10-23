@@ -32,7 +32,7 @@ npm run build
 npm run start
 ```
 
-##To Do
+## To Do
 - Criar testes automatizados
 - Modificar a busca para utilizar também o Topstories
 - Fazer a busca retornar em batches e permitir que os resultados sejam exibidos enquanto as requests estão em andamento
