@@ -2,7 +2,7 @@
   <div class="story-card">
     <a :href="story.url"><h2>{{story.title}}</h2></a>
     <p>by {{story.by}} {{new Date(story.time*1000).toLocaleString()}}</p>
-  <div v-if="story.type === 'story'">  
+  <div v-if="story.type === 'story'">
     <p><b>{{story.descendants}} comments</b></p>
     <p v-if="story.descendants > 0"
        v-on:click="handleComments(story)"
@@ -11,7 +11,7 @@
     </p>
  </div>
    <div v-if="story.showingComments && story.comments" class="comments">
-     <CommentCard v-for="comment in story.comments" :comment="comment"/>
+     <CommentCard v-for="comment in story.comments" :comment="comment" :key="'c_' + comment.id"/>
    </div>
   </div>
 </template>
@@ -63,7 +63,7 @@ export default {
     max-width: 100%;
   }
   .comments {
-    border-top: solid 1px;
+    border-top: solid 2px rgb(245 245 245);;
     margin: 0 -25px;
     padding: 0 25px;;
   }

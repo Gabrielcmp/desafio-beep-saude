@@ -60,7 +60,6 @@ export default {
     },
     onSubmit() {
       this.lastSearch = this.search
-      console.log(this.search)
       this.$store.dispatch('updateNewstoriesFilteredIds', this.search)
     }
   }
