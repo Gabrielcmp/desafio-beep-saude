@@ -1,6 +1,6 @@
 # Top 15 Hacker News Stories
 
-Desafio proposto pela Beep Saude, para construção de um site que liste as 15 Topstories mais recentes do site [HackerNews](https://news.ycombinator.com), utilizando sua [API pública](https://github.com/HackerNews/API)
+Desafio proposto pela Beep Saude, para construção de um site que liste as 15 Topstories mais recentes do site [HackerNews](https://news.ycombinator.com), utilizando sua [API pública](https://github.com/HackerNews/API) e permita buscas por palavras chave.
 
 [Top 15 HackerNews](https://hn-beep-challenge.herokuapp.com/) - Link do projeto
 
